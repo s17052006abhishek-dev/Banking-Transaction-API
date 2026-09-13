@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Banking Transaction API overview flow</title>
+  <desc id="desc">Overview of the banking API from client request through Express middleware, JWT authentication, controller validation, atomic MongoDB transaction processing, ledger persistence, rollback, and email notifications.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="4" orient="auto"><path d="M0 0 L0 8 L10 4 z" fill="#395b68"/></marker>
+    <marker id="red" markerWidth="12" markerHeight="12" refX="10" refY="4" orient="auto"><path d="M0 0 L0 8 L10 4 z" fill="#a04d4d"/></marker>
+    <style>
+      .bg{fill:#f7f9f8}.title{font:700 32px Arial;fill:#183642}.sub{font:16px Arial;fill:#58727a}.lane{stroke:#d3dfdf;stroke-width:2;rx:18}.lt{font:700 18px Arial;fill:#244b55}.box{stroke:#91aab0;stroke-width:2;rx:13}.bt{font:700 17px Arial;fill:#183642}.tx{font:14px Arial;fill:#405e66}.flow{stroke:#395b68;stroke-width:3;fill:none;marker-end:url(#arrow)}.err{stroke:#a04d4d;stroke-width:3;fill:none;marker-end:url(#red)}.lb{font:600 13px Arial;fill:#395b68}.el{font:600 13px Arial;fill:#a04d4d}.note{font:14px Arial;fill:#58727a}
+    </style>
+  </defs>
+  <rect class="bg" width="1600" height="1000"/>
+  <text class="title" x="55" y="58">Banking Transaction API: complete backend flow</text>
+  <text class="sub" x="55" y="88">From HTTP request and JWT validation to atomic money movement, ledger records, rollback, and notifications</text>
+
+  <rect class="lane" x="40" y="125" width="330" height="350" fill="#e1eff0"/><text class="lt" x="70" y="165">1. Client and routes</text>
+  <rect class="box" x="70" y="195" width="270" height="100" fill="#fff"/><text class="bt" x="95" y="232">Postman / frontend</text><text class="tx" x="95" y="260">JSON request + JWT cookie/header</text><text class="tx" x="95" y="282">New idempotency key per transfer</text>
+  <rect class="box" x="70" y="335" width="270" height="100" fill="#fff"/><text class="bt" x="95" y="372">Express routes</text><text class="tx" x="95" y="400">Auth, accounts, transactions</text><text class="tx" x="95" y="422">Normal and system funding paths</text><path class="flow" d="M205 295 L205 335"/>
+
+  <rect class="lane" x="420" y="125" width="350" height="350" fill="#e8f0e3"/><text class="lt" x="450" y="165">2. Middleware and security</text>
+  <rect class="box" x="450" y="195" width="290" height="100" fill="#fff"/><text class="bt" x="475" y="232">Global middleware</text><text class="tx" x="475" y="260">Helmet, CORS, rate limiter</text><text class="tx" x="475" y="282">JSON limit + cookie parser</text>
+  <rect class="box" x="450" y="335" width="290" height="100" fill="#fff"/><text class="bt" x="475" y="372">JWT authorization</text><text class="tx" x="475" y="400">Verify signature and expiration</text><text class="tx" x="475" y="422">Blacklist check, load req.user</text><path class="flow" d="M370 245 L450 245"/><path class="flow" d="M595 295 L595 335"/>
+
+  <rect class="lane" x="820" y="125" width="350" height="350" fill="#f4eadc"/><text class="lt" x="850" y="165">3. Controller validation</text>
+  <rect class="box" x="850" y="195" width="290" height="100" fill="#fff"/><text class="bt" x="875" y="232">Normal transfer</text><text class="tx" x="875" y="260">Source ownership + active accounts</text><text class="tx" x="875" y="282">Amount + idempotency validation</text>
+  <rect class="box" x="850" y="335" width="290" height="100" fill="#fff"/><text class="bt" x="875" y="372">System funding</text><text class="tx" x="875" y="400">Requires systemUser: true</text><text class="tx" x="875" y="422">System account has enough funds</text><path class="flow" d="M770 245 L850 245"/><path class="flow" d="M995 295 L995 335"/>
+
+  <rect class="lane" x="1220" y="125" width="340" height="350" fill="#ebe4ef"/><text class="lt" x="1250" y="165">4. Financial transaction</text>
+  <rect class="box" x="1250" y="195" width="280" height="100" fill="#fff"/><text class="bt" x="1275" y="232">MongoDB session</text><text class="tx" x="1275" y="260">Start ACID transaction</text><text class="tx" x="1275" y="282">Initial status: PENDING</text>
+  <rect class="box" x="1250" y="335" width="280" height="100" fill="#fff"/><text class="bt" x="1275" y="372">Atomic balance writes</text><text class="tx" x="1275" y="400">Debit source, credit destination</text><text class="tx" x="1275" y="422">Conditional $inc prevents overdraft</text><path class="flow" d="M1170 245 L1250 245"/><path class="flow" d="M1390 295 L1390 335"/>
+
+  <rect class="lane" x="40" y="535" width="720" height="350" fill="#f3eee5"/><text class="lt" x="70" y="575">5. Records, status, and rollback</text>
+  <rect class="box" x="70" y="615" width="285" height="105" fill="#fff"/><text class="bt" x="95" y="652">Transaction document</text><text class="tx" x="95" y="680">Unique key + PENDING status</text><text class="tx" x="95" y="702">Set COMPLETED after all writes</text>
+  <rect class="box" x="405" y="615" width="285" height="105" fill="#fff"/><text class="bt" x="430" y="652">Immutable ledger</text><text class="tx" x="430" y="680">DEBIT and CREDIT entries</text><text class="tx" x="430" y="702">Update/delete operations blocked</text>
+  <rect class="box" x="70" y="770" width="620" height="75" fill="#fff4f4"/><text class="bt" x="95" y="802">Failure path</text><text class="tx" x="95" y="828">Abort session and roll back debit, credit, transaction, and ledger writes</text><path class="flow" d="M1390 435 L550 615"/><path class="flow" d="M355 667 L405 667"/><path class="err" d="M1390 435 L1390 750 L690 750"/><text class="el" x="770" y="744">validation or database failure</text>
+
+  <rect class="lane" x="820" y="535" width="740" height="350" fill="#e5eef0"/><text class="lt" x="850" y="575">6. Commit and notification</text>
+  <rect class="box" x="850" y="615" width="285" height="105" fill="#dff0e8"/><text class="bt" x="875" y="652">Commit result</text><text class="tx" x="875" y="680">MongoDB commit succeeds</text><text class="tx" x="875" y="702">Return COMPLETED response</text>
+  <rect class="box" x="1180" y="615" width="350" height="105" fill="#fff"/><text class="bt" x="1205" y="652">Resend transaction emails</text><text class="tx" x="1205" y="680">Sender confirmation</text><text class="tx" x="1205" y="702">Receiver payment receipt</text>
+  <rect class="box" x="850" y="770" width="680" height="75" fill="#fff"/><text class="bt" x="875" y="802">Registration email</text><text class="tx" x="875" y="828">Gmail OAuth2 sends the welcome message without storing a Gmail password</text><path class="flow" d="M690 667 L850 667"/><path class="flow" d="M1135 667 L1180 667"/><path class="flow" d="M1190 720 L1190 770"/>
+
+  <text class="note" x="55" y="950">Core guarantees: JWT authentication | ownership authorization | system-user authorization | idempotency | ACID session | atomic balances | immutable ledger | rate limiting</text>
+</svg>

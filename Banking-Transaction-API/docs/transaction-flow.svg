@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="860" viewBox="0 0 1400 860" role="img" aria-labelledby="title desc">
+  <title id="title">Normal transaction flow</title>
+  <desc id="desc">A normal transfer validates the request and idempotency key, atomically debits and credits accounts, writes transaction and ledger records, commits, and emails both parties.</desc>
+  <defs><marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="4" orient="auto"><path d="M0 0 L0 8 L10 4 z" fill="#385b68"/></marker><marker id="red" markerWidth="12" markerHeight="12" refX="10" refY="4" orient="auto"><path d="M0 0 L0 8 L10 4 z" fill="#a04a4a"/></marker><style>.bg{fill:#f6f8f7}.title{font:700 30px Arial;fill:#183642}.sub{font:16px Arial;fill:#58727a}.box{stroke:#91aab0;stroke-width:2;rx:14}.bt{font:700 17px Arial;fill:#183642}.tx{font:14px Arial;fill:#405e66}.flow{stroke:#385b68;stroke-width:3;fill:none;marker-end:url(#arrow)}.err{stroke:#a04a4a;stroke-width:3;fill:none;marker-end:url(#red)}.lb{font:600 13px Arial;fill:#385b68}.el{font:600 13px Arial;fill:#a04a4a}</style></defs>
+  <rect class="bg" width="1400" height="860"/><text class="title" x="55" y="58">Normal user-to-user transaction</text><text class="sub" x="55" y="88">One request, one idempotency key, one atomic financial result</text>
+  <rect class="box" x="55" y="150" width="245" height="125" fill="#dceef0"/><text class="bt" x="80" y="190">1. Request</text><text class="tx" x="80" y="220">fromAccount, toAccount</text><text class="tx" x="80" y="246">amount + idempotencyKey</text>
+  <rect class="box" x="350" y="150" width="245" height="125" fill="#e8f0e3"/><text class="bt" x="375" y="190">2. Validate</text><text class="tx" x="375" y="220">Amount and account IDs</text><text class="tx" x="375" y="246">Source ownership + status</text>
+  <rect class="box" x="645" y="150" width="245" height="125" fill="#f4eadc"/><text class="bt" x="670" y="190">3. Idempotency</text><text class="tx" x="670" y="220">Find existing key</text><text class="tx" x="670" y="246">Unique index prevents duplicate</text>
+  <rect class="box" x="940" y="150" width="350" height="125" fill="#ebe4ef"/><text class="bt" x="965" y="190">4. Start MongoDB session</text><text class="tx" x="965" y="220">All financial writes share one ACID transaction</text><text class="tx" x="965" y="246">Initial status: PENDING</text>
+  <path class="flow" d="M300 212 L350 212"/><path class="flow" d="M595 212 L645 212"/><path class="flow" d="M890 212 L940 212"/>
+
+  <rect class="box" x="150" y="390" width="270" height="130" fill="#fff"/><text class="bt" x="175" y="430">5. Atomic debit</text><text class="tx" x="175" y="460">$inc source by -amount</text><text class="tx" x="175" y="486">Only if balance >= amount</text>
+  <rect class="box" x="565" y="390" width="270" height="130" fill="#fff"/><text class="bt" x="590" y="430">6. Atomic credit</text><text class="tx" x="590" y="460">$inc destination by amount</text><text class="tx" x="590" y="486">Only if destination is ACTIVE</text>
+  <rect class="box" x="980" y="390" width="270" height="130" fill="#fff"/><text class="bt" x="1005" y="430">7. Write records</text><text class="tx" x="1005" y="460">Transaction document</text><text class="tx" x="1005" y="486">DEBIT and CREDIT ledger entries</text>
+  <path class="flow" d="M1115 275 L285 390"/><text class="lb" x="650" y="335">same ACID session</text><path class="flow" d="M420 455 L565 455"/><path class="flow" d="M835 455 L980 455"/>
+
+  <rect class="box" x="350" y="650" width="270" height="120" fill="#dff0e8"/><text class="bt" x="375" y="690">8. Complete</text><text class="tx" x="375" y="720">Set status to COMPLETED</text><text class="tx" x="375" y="746">Commit all changes</text>
+  <rect class="box" x="780" y="650" width="270" height="120" fill="#dceef0"/><text class="bt" x="805" y="690">9. Notify both users</text><text class="tx" x="805" y="720">Sender confirmation</text><text class="tx" x="805" y="746">Receiver payment receipt</text>
+  <path class="flow" d="M1115 520 L485 650"/><path class="flow" d="M620 710 L780 710"/>
+  <path class="err" d="M700 520 L700 590 L190 590 L190 455"/><text class="el" x="240" y="615">failure: abort session and roll back debit, credit, and records</text>
+</svg>
