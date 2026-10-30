@@ -73,32 +73,32 @@ async function sendRegistrationEmail(userEmail, name) {
 
 async function sendTransactionEmail(userEmail, name, amount, toAccount) {
     const subject = 'Transaction Successful!';
-    const text = `Hello ${name},\n\nYour transaction of $${amount} to account ${toAccount} was successful.\n\nBest regards,\nThe Backend Transaction Api Team`;
-    const html = `<p>Hello ${name},</p><p>Your transaction of $${amount} to account ${toAccount} was successful.</p><p>Best regards,<br>The Backend Transaction Api Team</p>`;
+    const text = `Hello ${name},\n\nYour transaction of ${amount} INR to account ${toAccount} was successful.\n\nBest regards,\nThe Backend Transaction Api Team`;
+    const html = `<p>Hello ${name},</p><p>Your transaction of ${amount} INR to account ${toAccount} was successful.</p><p>Best regards,<br>The Backend Transaction Api Team</p>`;
 
     await sendEmailViaResend(userEmail, subject, text, html);
 }
 
 async function sendReceivedTransactionEmail(userEmail, name, amount, fromAccount) {
     const subject = 'Payment Received!';
-    const text = `Hello ${name},\n\nYou received $${amount} from account ${fromAccount}.\n\nBest regards,\nThe Backend Transaction Api Team`;
-    const html = `<p>Hello ${name},</p><p>You received $${amount} from account ${fromAccount}.</p><p>Best regards,<br>The Backend Transaction Api Team</p>`;
+    const text = `Hello ${name},\n\nYou received ${amount} INR from account ${fromAccount}.\n\nBest regards,\nThe Backend Transaction Api Team`;
+    const html = `<p>Hello ${name},</p><p>You received ${amount} INR from account ${fromAccount}.</p><p>Best regards,<br>The Backend Transaction Api Team</p>`;
 
     await sendEmailViaResend(userEmail, subject, text, html);
 }
 
 async function sendTransactionFailureEmail(userEmail, name, amount, toAccount) {
     const subject = 'Transaction Failed';
-    const text = `Hello ${name},\n\nWe regret to inform you that your transaction of $${amount} to account ${toAccount} has failed. Please try again later.\n\nBest regards,\nThe Backend Transaction Api Team`;
-    const html = `<p>Hello ${name},</p><p>We regret to inform you that your transaction of $${amount} to account ${toAccount} has failed. Please try again later.</p><p>Best regards,<br>The Backend Transaction Api Team</p>`;
+    const text = `Hello ${name},\n\nWe regret to inform you that your transaction of ${amount} INR to account ${toAccount} has failed. Please try again later.\n\nBest regards,\nThe Backend Transaction Api Team`;
+    const html = `<p>Hello ${name},</p><p>We regret to inform you that your transaction of ${amount} INR to account ${toAccount} has failed. Please try again later.</p><p>Best regards,<br>The Backend Transaction Api Team</p>`;
 
     await sendEmailViaResend(userEmail, subject, text, html);
 }
 
 async function sendSystemFundingEmail(userEmail, name, amount, toAccount) {
     const subject = 'System Funding Received';
-    const text = `Hello ${name},\n\nThe system has credited your account ${toAccount} with $${amount}.\n\nBest regards,\nThe Backend Transaction Api Team`;
-    const html = `<p>Hello ${name},</p><p>The system has credited your account ${toAccount} with $${amount}.</p><p>Best regards,<br>The Backend Transaction Api Team</p>`;
+    const text = `Hello ${name},\n\nThe system has credited your account ${toAccount} with ${amount} INR.\n\nBest regards,\nThe Backend Transaction Api Team`;
+    const html = `<p>Hello ${name},</p><p>The system has credited your account ${toAccount} with ${amount} INR.</p><p>Best regards,<br>The Backend Transaction Api Team</p>`;
 
     await sendEmailViaResend(userEmail, subject, text, html);
 }
